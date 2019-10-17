@@ -24,10 +24,10 @@ public class MapSortUtil {
 
         List<String> res=new ArrayList<String>();
 
-        for (Map.Entry<String, Integer> mapping : list) {
-            System.out.println("键：" + mapping.getKey() + " 值：" + mapping.getValue());
-
-        }
+//        for (Map.Entry<String, Integer> mapping : list) {
+//            System.out.println("键：" + mapping.getKey() + " 值：" + mapping.getValue());
+//
+//        }
         for (Map.Entry<String, Integer> mapping : list){
             res.add(mapping.getKey());
         }
