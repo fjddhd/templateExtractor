@@ -1,7 +1,10 @@
 import Utils.MapSortUtil;
 import Utils.WriteHtml;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileReader;
+import cn.hutool.core.io.file.FileWriter;
 
+import java.io.File;
 import java.util.*;
 
 public class MainClass {
@@ -18,9 +21,12 @@ public class MainClass {
 //        for (int i=0;i<list.size();++i){
 //            System.out.println(list.get(i));
 //        }
-        String filePath="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Apache_2k.log";
-        int cutTimeStamp=27;
-        bulidFtTree(filePath,cutTimeStamp,5,"Apache_27_5");
+//        addressFiles();//合并日志文件
+
+        String filePath="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Zookeeper_2k.log";
+        String filePath1="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Cron\\cron";
+//        int cutTimeStamp=27;
+        bulidFtTree(filePath1,16,6,"cron_16_6");
     }
     public static void bulidFtTree(String filePath,int cutTimeStamp,int MaxChildren,String htmlResultName){
         FileReader fileReader = new FileReader(filePath);
@@ -37,8 +43,11 @@ public class MainClass {
         for (int i=0;i<dataListRaw.size();++i){
             String tempS = dataList.get(i);
             tempS=tempS.replaceAll("="," ");
-            tempS=tempS.replaceAll("/"," ");
+            tempS=tempS.replaceAll("\\["," ");
             tempS=tempS.replaceAll(":"," ");
+            tempS=tempS.replaceAll("-"," ");
+            tempS=tempS.replaceAll("\\]"," ");
+            tempS=tempS.replaceAll("\\*"," ");
 //            tempS=tempS.replaceAll("-"," ");
             dataList.set(i,tempS);
         }
@@ -219,6 +228,15 @@ public class MainClass {
 
         }
         return reslist;
+    }
+
+    public static void addressFiles(){
+        for (int i=1;i<=33;++i){
+            FileReader fileReader = new FileReader("D:\\javaDir\\templateExtractor\\src\\main\\resources\\Cron\\cron."+i);
+            List<String> dataListRaw=fileReader.readLines();
+            FileUtil.writeLines(dataListRaw,"D:\\javaDir\\templateExtractor\\src\\main\\resources\\Cron\\cron",new String(),true);
+        }
+
     }
 
 
