@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 public class FtTree {
-    private static int maxChildren=5;
     public String value;
     public ArrayList<FtTree> childrens;
 
@@ -9,7 +8,7 @@ public class FtTree {
         this.value=value;
         this.childrens=new ArrayList<FtTree>();
     }
-    public void cutOff(){
+    public void cutOff(int maxChildren){
         if (childrens.size()>=maxChildren){
             childrens=new ArrayList<FtTree>();
         }

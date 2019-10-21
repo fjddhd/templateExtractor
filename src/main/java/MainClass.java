@@ -18,10 +18,12 @@ public class MainClass {
 //        for (int i=0;i<list.size();++i){
 //            System.out.println(list.get(i));
 //        }
-        bulidFtTree();
+        String filePath="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Apache_2k.log";
+        int cutTimeStamp=27;
+        bulidFtTree(filePath,cutTimeStamp,5,"Apache_27_5");
     }
-    public static void bulidFtTree(){
-        FileReader fileReader = new FileReader("D:\\javaDir\\templateExtractor\\src\\main\\resources\\Apache_2k.log");
+    public static void bulidFtTree(String filePath,int cutTimeStamp,int MaxChildren,String htmlResultName){
+        FileReader fileReader = new FileReader(filePath);
         List<String> dataListRaw=fileReader.readLines();
 //        for (int i=0;i<dataList.size();++i){
 //            System.out.println(dataList.get(i));
@@ -29,7 +31,16 @@ public class MainClass {
         List<String> dataList=new ArrayList<String>();
         //手动剔除日期
         for (int i=0;i<dataListRaw.size();++i){
-            dataList.add(String.copyValueOf(dataListRaw.get(i).toCharArray(),27,dataListRaw.get(i).length()-27));
+            dataList.add(String.copyValueOf(dataListRaw.get(i).toCharArray(),cutTimeStamp,dataListRaw.get(i).length()-cutTimeStamp));
+        }
+        //符号=，/，：转空格
+        for (int i=0;i<dataListRaw.size();++i){
+            String tempS = dataList.get(i);
+            tempS=tempS.replaceAll("="," ");
+            tempS=tempS.replaceAll("/"," ");
+            tempS=tempS.replaceAll(":"," ");
+//            tempS=tempS.replaceAll("-"," ");
+            dataList.set(i,tempS);
         }
 
 
@@ -51,14 +62,14 @@ public class MainClass {
             }
         }
         for (int i=0;i<dataList.size();++i){
-            String[] ss=dataList.get(i).split(" ");
+            String[] ss=dataList.get(i).split(" +");//根据1次或多次空格分词
             List<String> addressedLine=new ArrayList<String>();
             HashMap<String,Integer> tempHm=new HashMap<String, Integer>();
             for (int j=0;j<ss.length;++j){
                 tempHm.put(ss[j],hm.get(ss[j]));
             }
-            List<String> sortedList=MapSortUtil.sortByValue(tempHm);
-            for (int j=sortedList.size()-1;j>=0;--j){
+            List<String> sortedList=MapSortUtil.sortByValue(tempHm);//按频率从低到高排序
+            for (int j=sortedList.size()-1;j>=0;--j){//相反顺序插入到addressLine中
                 addressedLine.add(sortedList.get(j));
             }
             L.add(addressedLine);
@@ -101,13 +112,14 @@ public class MainClass {
 //            System.out.println();
 //        }
         //遍历加剪枝
-        CutOffByTra(ftTree,true);
-        saveFttreeHtml(ftTree);
+        CutOffByTra(ftTree,true,MaxChildren);
+        //保存可视化FtTree
+        saveFttreeHtml(ftTree,htmlResultName);
 
         System.out.println(" ");//用于debug断点看树结构
     }
 
-    public static void CutOffByTra(FtTree ftTree, boolean needCutOff){
+    public static void CutOffByTra(FtTree ftTree, boolean needCutOff,int MaxChildren){
 //        System.out.println(FtTree.getValue());
         ArrayDeque<FtTree> ad=new ArrayDeque<FtTree>();
         ad.push(ftTree);
@@ -115,7 +127,7 @@ public class MainClass {
         while (!ad.isEmpty()){
             FtTree popFtTree = ad.pop();
             ArrayList<FtTree> childrens = popFtTree.childrens;
-            popFtTree.cutOff();
+            popFtTree.cutOff(MaxChildren);
 //            System.out.println(popFtTree.value);
             for (int i=0;i<childrens.size();++i){
                 ad.push(childrens.get(i));
@@ -165,7 +177,7 @@ public class MainClass {
         return sb1.toString();
 
     }
-    public static void saveFttreeHtml(FtTree ftTree){
+    public static void saveFttreeHtml(FtTree ftTree,String htmlResultName){
         StringBuilder sb=new StringBuilder();
         sb.append("graph g {");
         sb.append(saveNode(ftTree));
@@ -173,7 +185,7 @@ public class MainClass {
         System.out.println(sb.toString());
 
         String html = WriteHtml.generateHTML(sb.toString());
-        String file = "D:/graph/FtTree4.html";  // 自定义输出路径
+        String file = "D:/graph/"+htmlResultName+".html";  // 自定义输出路径
         WriteHtml.writeHTML(file, html);
     }
 
