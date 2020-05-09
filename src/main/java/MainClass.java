@@ -25,8 +25,9 @@ public class MainClass {
 
         String filePath="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Zookeeper_2k.log";
         String filePath1="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Cron\\cron";
+        String filePath2="D:\\javaDir\\templateExtractor\\src\\main\\resources\\Maillog\\maillog";
 //        int cutTimeStamp=27;
-        bulidFtTree(filePath1,16,6,"cron_16_6");
+        bulidFtTree(filePath2,16,15,"maillog_16_10");
     }
     public static void bulidFtTree(String filePath,int cutTimeStamp,int MaxChildren,String htmlResultName){
         FileReader fileReader = new FileReader(filePath);
@@ -43,6 +44,7 @@ public class MainClass {
         for (int i=0;i<dataListRaw.size();++i){
             String tempS = dataList.get(i);
             tempS=tempS.replaceAll("="," ");
+            tempS=tempS.replaceAll(","," ");
             tempS=tempS.replaceAll("\\["," ");
             tempS=tempS.replaceAll(":"," ");
             tempS=tempS.replaceAll("-"," ");
@@ -137,7 +139,7 @@ public class MainClass {
             FtTree popFtTree = ad.pop();
             ArrayList<FtTree> childrens = popFtTree.childrens;
             popFtTree.cutOff(MaxChildren);
-//            System.out.println(popFtTree.value);
+//            System.out.println(pyopFtTree.value);
             for (int i=0;i<childrens.size();++i){
                 ad.push(childrens.get(i));
             }
@@ -232,9 +234,9 @@ public class MainClass {
 
     public static void addressFiles(){
         for (int i=1;i<=33;++i){
-            FileReader fileReader = new FileReader("D:\\javaDir\\templateExtractor\\src\\main\\resources\\Cron\\cron."+i);
+            FileReader fileReader = new FileReader("D:\\javaDir\\templateExtractor\\src\\main\\resources\\Maillog\\maillog."+i);
             List<String> dataListRaw=fileReader.readLines();
-            FileUtil.writeLines(dataListRaw,"D:\\javaDir\\templateExtractor\\src\\main\\resources\\Cron\\cron",new String(),true);
+            FileUtil.writeLines(dataListRaw,"D:\\javaDir\\templateExtractor\\src\\main\\resources\\Maillog\\maillog",new String(),true);
         }
 
     }
